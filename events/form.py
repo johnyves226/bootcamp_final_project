@@ -6,10 +6,14 @@ from .models import Event
 
 
 class EventCreateForm():
-    name = forms.CharField(max_length=200, null=False)
-    description = forms.TextField()
+    # name = forms.CharField(max_length=200, null=False)
+    # description = forms.TextField()
+    # is_active = forms.BooleanField(default=False)
 
+    class Meta:
+        model = Event
+        model = ('name','description','is_active')
+        labels = {
+            'name': 'Display Name'
+        }
 
-    def save(self):
-
-        pass

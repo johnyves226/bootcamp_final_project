@@ -28,7 +28,8 @@ INSTALLED_APPS = [
     'user',
     'images',
     'events',
-    'widget_tweaks'
+    'widget_tweaks',
+    'crispy_forms'
 
 ]
 

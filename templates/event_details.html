@@ -1,0 +1,31 @@
+{% extends  'head.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+ {% block content %}
+     {% block css %}
+        <link rel="stylesheet"  type="text/css" href="{% static "/style/style.css" %}">
+    {% endblock %}
+{% load crispy_forms_tags %}
+{% if event.created_date %}
+     <div class="card" style="width: 18rem;">
+      <img class="card-img-top" src="{{ event.qrcode.url }}" alt="Event QR code">
+        <div class="card-body">
+            <h5 class="card-title">{{ event.name }}</h5>
+            <time class="date">
+                {{ event.created_date }}
+            </time>
+             {% endif %}
+            <p class="card-text">{{ event.description }}</p>
+                <form action="{% url 'addImages' %}" method="post" class="note-form" enctype="multipart/form-data">{% csrf_token %}
+                    <div class="form-group">
+                        <label for="images" class="drop-container">
+                            <span class="drop-title">Drop images here</span>
+                        <input type="file"  id="images" name="images"  multiple>
+                        </label>
+                    </div>
+                    <button type="submit" class="btn btn-primary"><span class="fa-solid fa-floppy-disk"></span>Save</button>
+                </form>
+        </div>
+    </div>
+{% endblock content %}

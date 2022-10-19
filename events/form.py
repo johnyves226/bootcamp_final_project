@@ -5,15 +5,23 @@ from user.models import User,Photographer,Viewer
 from .models import Event
 
 
-class EventCreateForm():
-    # name = forms.CharField(max_length=200, null=False)
-    # description = forms.TextField()
-    # is_active = forms.BooleanField(default=False)
+class EventCreateForm(forms.ModelForm):
 
     class Meta:
         model = Event
-        model = ('name','description','is_active')
+        fields = ['name','description','is_active','author']
+        widgets = {'author': forms.HiddenInput()}
         labels = {
-            'name': 'Display Name'
+            'name': 'Event Name',
+            'description': 'Event Description',
+            'is_active':'active event'
         }
 
+
+class ImageForm(forms.ModelForm):
+    event_id = forms.IntegerField(required=False)
+    images =  forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}),required=False)
+    tags = forms.CharField(max_length=50, required=False)
+
+    class Meta(EventCreateForm.Meta):
+        fields = EventCreateForm.Meta.fields + ['images','event_id','tags']

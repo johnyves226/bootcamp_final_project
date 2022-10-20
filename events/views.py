@@ -44,44 +44,60 @@ def SearchEvent():
 def EventEdit(request, pk):
      pass
 
+
+@login_required
 def GetEvent(request,pk):
-      context = {}
       template = loader.get_template('../templates/event_details.html')
       event = Event.objects.get(pk=pk)
-      context['event'] = event
+      context = {'event':event}
       return HttpResponse(template.render(context, request))
+
+@login_required
+def GetAllEvent(request):
+    template = loader.get_template('../templates/events_view.html')
+    events = Event.objects.filter(author=request.user)
+    context = {'event':events}
+    return HttpResponse(template.render(context, request))
 
 
 
 @login_required
 def addImages(request,pk):
-    context = {}
+    print("done ")
     template = loader.get_template('../templates/events_view.html')
-    form = ImageForm(request.POST or None, request.FILES or None)
     if request.method == 'POST':
+        form = ImageForm(request.POST or None, request.FILES or None)
         files = request.FILES.getlist('images')
+        print("First post if ok")
         if form.is_valid():
+            print("if valid ok")
             event = Event.objects.get(pk=pk)
         for f in files:
-            Image.objects.create(event=event, image=f)
+            print("for file valid ")
+            form=Image.objects.create(images=f,event=event)
+            img_obj = form.instance
+            print("create image ok ")
+            context = {'form':form,'img_obj': img_obj}
+            return HttpResponseRedirect(template.render(context, request))
         else:
             print("Form invalid, see below error msg")
             print(form.errors)
     else:
+        print("Last else")
         form = ImageForm()
-    return HttpResponseRedirect('/')
+        context = {'form':form}
+    return HttpResponseRedirect(template.render(context, request))
 
 
 @login_required()
 class SearchEvent(ListView):
     """Class to render search results"""
     model = Event
-    template_name = "../templates/index.html"
+    template_name = "../templates/event_details.html"
 
     def get_queryset(self):
         query = self.request.GET.get('q')
         queryset = Event.objects.filter(
-            Q(title__icontains=query) | Q(tags__name__icontains=query)
-            # | Q(text__icontains=query) # will not work bcoz of encryption
+            Q(name__icontains=query) | Q(tags__name__icontains=query)
         ).distinct()
         return queryset

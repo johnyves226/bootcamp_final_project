@@ -1,13 +1,21 @@
+import os
+
 from django.db import models
 from django.db.models.signals import pre_save
 from django.template.defaultfilters import slugify
 from django.core.files import File
 import qrcode
 from io import BytesIO
-from PIL import Image,ImageDraw
+from PIL import Image as im,ImageDraw
 from django.utils import timezone
 
 from user.models import User
+
+def user_directory_path(instance,filename):
+    base_name = os.path.basename(filename)
+    name,ext = os.path.splitext(base_name)
+    return "event/user/"+ str(instance.event.user.id) + "/"+ str(instance.event.id)+ "/"+"IMG_" + str(instance.event.id)+ext
+
 
 class Tag(models.Model):
     name = models.CharField(max_length=50,unique=True)
@@ -46,7 +54,7 @@ class Event(models.Model):
 
     def save(self,*args,**kwargs):
         qrcode_img = qrcode.make(self.name)
-        canvas= Image.new('RGB',(290,290),'white')
+        canvas= im.new('RGB',(290,290),'white')
         draw = ImageDraw.Draw(canvas)
         canvas.paste(qrcode_img)
         fname=f'qr_code-{self.name}'+'.png'
@@ -56,17 +64,17 @@ class Event(models.Model):
         canvas.close()
         super().save(*args,**kwargs)
 
-def get_image_filename(instance, filename):
-    title = instance.event.name
-    slug = slugify(title)
-    return "images/event/%s-%s" % (slug, filename)
+def get_image_filename(title,instance=None,):
+    if instance:
+        title = instance.event.name
+        slug = slugify(title)
+        return "images/event/%s-%s" % (slug,title)
+    else:
+        return "images/event/%s" % (title)
 
 
 class Image(models.Model):
-    name = models.CharField(max_length=200, null=False);
-    slug = models.SlugField(max_length=250, unique_for_date='published')
-    images=models.ImageField(upload_to=get_image_filename,
-                              verbose_name='Image')
+    images=models.ImageField(upload_to=get_image_filename,null=True,blank=True)
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -80,3 +88,6 @@ def get_unique_slug(sender, instance, **kwargs):
         unique_slug = '{}-{}'.format(slug, num)
         num += 1
     instance.slug=unique_slug
+
+
+pre_save.connect(get_unique_slug,sender=Event)

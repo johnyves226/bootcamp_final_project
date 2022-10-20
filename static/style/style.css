@@ -9,10 +9,13 @@
 
 
 body{
-    background-image: url("/static/img/backc.jpg");
+    background-image: url("/static/img/backc.jpg") ;
+    background-repeat: no-repeat;
     height: 50%;
     width: 100%;
 }
+
+
 .drop-container {
   position: relative;
   display: flex;
@@ -20,7 +23,7 @@ body{
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 40px;
+  height: 200px;
   padding: 20px;
   border-radius: 10px;
   border: 2px dashed #555;
@@ -47,7 +50,7 @@ body{
 }
 
 input[type=file] {
-  width: 50px;
+  width: 150px;
   max-width: 100%;
   color: #444;
   padding: 5px;

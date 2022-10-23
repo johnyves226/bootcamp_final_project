@@ -64,17 +64,17 @@ class Event(models.Model):
         canvas.close()
         super().save(*args,**kwargs)
 
-def get_image_filename(title,instance=None,):
+def get_image_filename(names,instance=None):
     if instance:
-        title = instance.event.name
-        slug = slugify(title)
-        return "images/event/%s-%s" % (slug,title)
+        name = instance.user.name
+        slug = slugify(name)
+        return "images/event/%s-%s" % (slug,names)
     else:
-        return "images/event/%s" % (title)
+        return "images/event/%s" % (names)
 
 
 class Image(models.Model):
-    images=models.ImageField(upload_to=get_image_filename,null=True,blank=True)
+    images=models.ImageField(upload_to="images/event",null=True,blank=True)
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
 
     def __str__(self):

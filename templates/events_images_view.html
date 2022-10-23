@@ -1,0 +1,41 @@
+{% extends  'head.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+ {% block content %}
+     {% block css %}
+        <link rel="stylesheet"  type="text/css" href="{% static "/style/style.css" %}">
+    {% endblock %}
+{% load crispy_forms_tags %}
+     <div class="container">
+        <div class="row">
+            <div class="col-lg-6 mb-4"  style='cursor: pointer; padding-bottom: 15px;'>
+                <div style='height: auto;' class='card mb-4' style='border: 1px solid #33cdc6;'>
+                    <img style='height:auto; width: 100%;' class='card-img-top'  src="{{ event.qrcode.url }}" alt="Event QR code">
+                    <div class="card-body">
+                    <h5 class="card-title">{{ event.name }}</h5>
+                        <time class="date card-text">
+                        {{ event.created_date }}
+                        </time>
+                    <p class="card-text">{{ event.description }}</p>
+                    </div>
+                    <div class="card-footer">
+                        <form action="{% url 'addImages' pk=event.id %}" method="post" class="note-form" enctype="multipart/form-data">{% csrf_token %}
+                            <div class="form-group">
+                                <label for="images" class="drop-container">
+                                    <span class="drop-title">Drop images here</span>
+                                    <input type="file"  id="images" name="images"  multiple required>
+                                </label>
+                            </div>
+                            <button type="submit" class="btn btn-primary"><span class="fa-solid fa-floppy-disk"></span>Save images</button>
+                        </form>
+                         <hr>
+                        {% for img in images %}
+                        <img src="{{img.images.url}}" alt="Image" width="100" height="100" style="border: 1px solid black;">
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+     </div>
+{% endblock content %}

@@ -1,3 +1,4 @@
+
 {% extends  'head.html' %}
 {% load static %}
 {% load widget_tweaks %}
@@ -7,35 +8,46 @@
         <link rel="stylesheet"  type="text/css" href="{% static "/style/style.css" %}">
     {% endblock %}
 {% load crispy_forms_tags %}
-     <div class="container">
- {% for even in event %}
-     <div class="row">
-     <div class="col-lg-6 mb-4"  style='cursor: pointer; padding-bottom: 15px;'>
-     <div style='height: auto;' class='card mb-4' style='border: 1px solid #33cdc6;'>
-      <img style='height:auto; width: 100%;' class='card-img-top'  src="{{ even.qrcode.url }}" alt="Event QR code">
-        <div class="card-body">
-            <h5 class="card-title">{{ even.name }}</h5>
-            <time class="date card-text">
+
+
+<div style="display: flex; flex-direction: row; flex-wrap: wrap">
+
+   {% for even in event %}
+  {#  Single Card Template:#}
+  <div class="card" style="width: 18rem; margin: 10px">
+    <img style='height:auto; width: 100%;' class='card-img-top'  src="{{ even.qrcode.url }}" alt="Event QR code">
+    <div class="card-body">
+      <div style="display: flex; flex-direction: row">
+        <h5 class="card-title">{{ even.name }}</h5>
+        <div><a href="{% url 'eventImage' pk=even.id %}"><button class="btn btn-primary">see photos</button></a></div>
+        {#  Colored cirlce:#}
+        <div style="
+          background: {{ card.color }};
+          width: 20px;
+          height: 20px;
+          margin-left: 10px;
+          border-radius: 50%;
+        "></div>
+      </div>
+      <p class="card-text">{{ even.description }}</p>
+        <time class="date card-text">
                 {{ even.created_date }}
-            </time>
-
-            <p class="card-text">{{ even.description }}</p>
-
-        </div>
-          <div class="card-footer">
-            <form action="{% url 'addImages' pk=even.id %}" method="post" class="note-form" enctype="multipart/form-data">{% csrf_token %}
+		</time>
+	  <div class="card-footer">
+                <form action="{% url 'addImages' pk=even.id %}" method="post" class="note-form" enctype="multipart/form-data">{% csrf_token %}
                     <div class="form-group">
                         <label for="images" class="drop-container">
                             <span class="drop-title">Drop images here</span>
-                        <input type="file"  id="images" name="images"  multiple required>
+                            <input type="file"  id="images" name="images"  multiple required>
                         </label>
                     </div>
                     <button type="submit" class="btn btn-primary"><span class="fa-solid fa-floppy-disk"></span>Save images</button>
-            </form>
-        </div>
-     </div>
+                </form>
+			  </div>
     </div>
-    </div>
- {% endfor %}
-     </div>
+  </div>
+  {% endfor %}
+
+</div>
+
 {% endblock content %}

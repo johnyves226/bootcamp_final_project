@@ -12,12 +12,14 @@
       <img class="card-img-top" src="{{ event.qrcode.url }}" alt="Event QR code">
         <div class="card-body">
             <h5 class="card-title">{{ event.name }}</h5>
+            <div><a href="{% url 'eventImage' pk=event.id %}"><button class="btn btn-primary">see photos</button></a></div>
             <time class="date">
                 {{ event.created_date }}
             </time>
 
             <p class="card-text">{{ event.description }}</p>
-                <form action="{% url 'addImages' pk=event.id %}" method="post" class="note-form" enctype="multipart/form-data">{% csrf_token %}
+                <form action="{% url 'addImages' pk=event.id %}" method="post" class="note-form" enctype="multipart/form-data">
+                    {% csrf_token %}
                     <div class="form-group">
                         <label for="images" class="drop-container">
                             <span class="drop-title">Drop images here</span>

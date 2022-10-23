@@ -52,6 +52,15 @@ def GetEvent(request,pk):
       context = {'event':event}
       return HttpResponse(template.render(context, request))
 
+
+@login_required
+def GetEventImage(request,pk):
+    template = loader.get_template('../templates/events_images_view.html')
+    event = Event.objects.get(pk=pk)
+    images=Image.objects.filter(event=event)
+    context = {'event':event,'images':images}
+    return HttpResponse(template.render(context, request))
+
 @login_required
 def GetAllEvent(request):
     template = loader.get_template('../templates/events_view.html')
@@ -63,30 +72,20 @@ def GetAllEvent(request):
 
 @login_required
 def addImages(request,pk):
-    print("done ")
-    template = loader.get_template('../templates/events_view.html')
+    template = loader.get_template('../templates/events_images_view.html')
     if request.method == 'POST':
         form = ImageForm(request.POST or None, request.FILES or None)
-        files = request.FILES.getlist('images')
-        print("First post if ok")
-        if form.is_valid():
-            print("if valid ok")
-            event = Event.objects.get(pk=pk)
-        for f in files:
+        images = request.FILES.getlist('images')
+        event = Event.objects.get(pk=pk)
+        for image in images:
             print("for file valid ")
-            form=Image.objects.create(images=f,event=event)
-            img_obj = form.instance
+            Image.objects.create(images=image,event=event)
             print("create image ok ")
-            context = {'form':form,'img_obj': img_obj}
-            return HttpResponseRedirect(template.render(context, request))
-        else:
-            print("Form invalid, see below error msg")
-            print(form.errors)
+        images = Image.objects.filter(event=event)
+        context = {'event':event,'images': images}
+        return HttpResponse(template.render(context, request))
     else:
-        print("Last else")
-        form = ImageForm()
-        context = {'form':form}
-    return HttpResponseRedirect(template.render(context, request))
+        return HttpResponse('/')
 
 
 @login_required()

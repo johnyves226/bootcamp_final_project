@@ -9,9 +9,10 @@
 
 
 body{
-    background-image: url("/static/img/backc.jpg") ;
+    /*background-image: url("/static/img/backc.jpg") ;*/
+  background-color: azure;
     background-repeat: no-repeat;
-    height: 50%;
+    height: 100%;
     width: 100%;
 }
 

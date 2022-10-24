@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'user',
     'events',
+    'order',
     'widget_tweaks',
     'crispy_forms'
 

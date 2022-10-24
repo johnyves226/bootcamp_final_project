@@ -9,7 +9,8 @@ urlpatterns=[
      path('<int:pk>/edit/', views.EventEdit, name='event_edit'),
      path('search/',views.SearchEvent, name='search_event'),
      path('<int:pk>/image/',views.addImages, name='addImages'),
-     path('<int:pk>/images/',views.GetEventImage, name='eventImage')
+     path('<int:pk>/images/',views.GetEventImage, name='eventImage'),
+     path('<int:pke>/images/<int:pk>',views.showImage, name='seeImage')
 
 
 ]

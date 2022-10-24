@@ -74,6 +74,7 @@ def get_image_filename(names,instance=None):
 
 
 class Image(models.Model):
+    price = models.IntegerField(max_length=4,null=True,blank=True);
     images=models.ImageField(upload_to="images/event",null=True,blank=True)
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
 

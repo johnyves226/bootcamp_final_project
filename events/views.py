@@ -1,14 +1,13 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic import ListView
-from django.views import View
 from django.template import loader
-from requests import request
 from django.contrib import messages
 from django.db.models import Q
 from events.form import EventCreateForm, ImageForm
 from events.models import Event, Image
+from user.models import Photographer
 
 
 @login_required
@@ -33,14 +32,33 @@ def CreateEvent(request):
           return HttpResponse(template.render(context, request))
 
 
+
 def index():
      pass
 
 
-def SearchEvent():
-     pass
+@login_required
+class SearchPhotographer(ListView):
+    model = Photographer
+    template_name = "../templates/result.html"
 
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        queryset = Photographer.objects.filter(
+            Q(user__first_name__icontains=query) | Q(user__last_name__icontains=query) | Q(user__user_name__icontains=query)
+            | Q(user__email__icontains=query)
+        ).distinct()
+        return queryset
 
+@login_required
+def showImage(request,pke, pk):
+    template = loader.get_template('../templates/showImage.html')
+    event = Event.objects.get(pk=pke)
+    image=Image.objects.get(pk=pk)
+    context = {'event': event,'image':image}
+    return HttpResponse(template.render(context, request))
+
+@login_required
 def EventEdit(request, pk):
      pass
 
